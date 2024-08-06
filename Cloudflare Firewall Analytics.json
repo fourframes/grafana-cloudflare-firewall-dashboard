@@ -1,0 +1,957 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_YESOREYERAM-INFINITY-DATASOURCE",
+      "label": "yesoreyeram-infinity-datasource",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "yesoreyeram-infinity-datasource",
+      "pluginName": "Infinity"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "bargauge",
+      "name": "Bar gauge",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "geomap",
+      "name": "Geomap",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "11.2.0-73830"
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "yesoreyeram-infinity-datasource",
+      "name": "Infinity",
+      "version": "2.9.5"
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Cloudflare Firewall Analytics Dashboard",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 2,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "${DS_YESOREYERAM-INFINITY-DATASOURCE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 30
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 17,
+        "w": 14,
+        "x": 0,
+        "y": 0
+      },
+      "id": 51,
+      "options": {
+        "basemap": {
+          "config": {},
+          "name": "Layer 0",
+          "type": "default"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": true,
+          "showDebug": false,
+          "showMeasure": false,
+          "showScale": false,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "showLegend": true,
+              "style": {
+                "color": {
+                  "field": "sum.requests",
+                  "fixed": "dark-green"
+                },
+                "opacity": 0.4,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "field": "sum.requests",
+                  "fixed": 5,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "symbolAlign": {
+                  "horizontal": "center",
+                  "vertical": "center"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "location": {
+              "lookup": "Country",
+              "mode": "lookup"
+            },
+            "name": "Layer 1",
+            "tooltip": true,
+            "type": "markers"
+          }
+        ],
+        "tooltip": {
+          "mode": "details"
+        },
+        "view": {
+          "allLayers": true,
+          "id": "coords",
+          "lat": 22.299077,
+          "lon": 28.648308,
+          "zoom": 2
+        }
+      },
+      "pluginVersion": "11.2.0-73830",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "clientCountryName",
+              "text": "count",
+              "type": "string"
+            },
+            {
+              "selector": "clientCountryName",
+              "text": "Country",
+              "type": "string"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "${DS_YESOREYERAM-INFINITY-DATASOURCE}"
+          },
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "data.viewer.accounts.firewallEventsAdaptive",
+          "source": "url",
+          "type": "graphql",
+          "url": "https://api.cloudflare.com/client/v4/graphql",
+          "url_options": {
+            "body_content_type": "application/json",
+            "body_graphql_query": "query {\n  viewer {\n    accounts(filter: {accountTag:\"${accountTag}\"}) {\n      firewallEventsAdaptive(filter: \n        {  \n          \n          datetime_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\",datetime_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\",\n        } limit: 10000) {\n        clientCountryName\n      \n      }\n       \n    } \n    \n  }\n  \n} ",
+            "body_type": "graphql",
+            "data": "",
+            "headers": [],
+            "method": "POST",
+            "params": []
+          }
+        }
+      ],
+      "title": "Country",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Country": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "count": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              }
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "geomap"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "${DS_YESOREYERAM-INFINITY-DATASOURCE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "displayName": "${__field.labels}",
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 10,
+        "x": 14,
+        "y": 0
+      },
+      "id": 69,
+      "options": {
+        "displayMode": "gradient",
+        "maxVizHeight": 80,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "left",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^count \\(count\\)$/",
+          "limit": 10,
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "manual",
+        "text": {},
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.2.0-73830",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "clientCountryName",
+              "text": "Country",
+              "type": "string"
+            },
+            {
+              "selector": "clientCountryName",
+              "text": "count",
+              "type": "string"
+            }
+          ],
+          "computed_columns": [],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "${DS_YESOREYERAM-INFINITY-DATASOURCE}"
+          },
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "groq": "*",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "data.viewer.accounts.firewallEventsAdaptive",
+          "source": "url",
+          "summarizeAlias": "",
+          "summarizeBy": "",
+          "summarizeExpression": "",
+          "type": "graphql",
+          "uql": "parse-json | scope \"data.viewer.accounts\" | mv-expand \"firewallEventsAdaptive\"",
+          "url": "https://api.cloudflare.com/client/v4/graphql",
+          "url_options": {
+            "body_content_type": "application/json",
+            "body_graphql_query": "query {\n  viewer {\n    accounts(filter: {accountTag:\"${accountTag}\"}) {\n      firewallEventsAdaptive(filter: \n        {  \n          \n          datetime_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\",datetime_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\",\n        } limit: 10000) {\n        clientCountryName\n      \n      }\n       \n    } \n    \n  }\n  \n} ",
+            "body_type": "graphql",
+            "data": "",
+            "headers": [],
+            "method": "POST",
+            "params": []
+          }
+        }
+      ],
+      "title": "Client Country Name",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Count": {
+                "aggregations": [],
+                "operation": "aggregate"
+              },
+              "Country": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "action": {
+                "aggregations": [
+                  "allValues"
+                ],
+                "operation": "groupby"
+              },
+              "count": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              }
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "${DS_YESOREYERAM-INFINITY-DATASOURCE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "displayName": "${__field.labels}",
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 10,
+        "x": 14,
+        "y": 6
+      },
+      "id": 72,
+      "options": {
+        "displayMode": "gradient",
+        "maxVizHeight": 80,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "left",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^count \\(count\\)$/",
+          "limit": 10,
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "manual",
+        "text": {},
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.2.0-73830",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "clientRequestPath",
+              "text": "Path",
+              "type": "string"
+            },
+            {
+              "selector": "clientRequestPath",
+              "text": "count",
+              "type": "string"
+            }
+          ],
+          "computed_columns": [],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "${DS_YESOREYERAM-INFINITY-DATASOURCE}"
+          },
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "groq": "*",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "data.viewer.accounts.firewallEventsAdaptive",
+          "source": "url",
+          "summarizeAlias": "",
+          "summarizeBy": "",
+          "summarizeExpression": "",
+          "type": "graphql",
+          "uql": "parse-json | scope \"data.viewer.accounts\" | mv-expand \"firewallEventsAdaptive\"",
+          "url": "https://api.cloudflare.com/client/v4/graphql",
+          "url_options": {
+            "body_content_type": "application/json",
+            "body_graphql_query": "query {\n  viewer {\n    accounts(filter: {accountTag:\"${accountTag}\"}) {\n      firewallEventsAdaptive(filter: \n        {  \n          \n         datetime_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\",datetime_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\",\n        } limit: 10000) {\n        clientRequestPath\n      \n      }\n       \n    } \n    \n  }\n  \n} ",
+            "body_type": "graphql",
+            "data": "",
+            "headers": [],
+            "method": "POST",
+            "params": []
+          }
+        }
+      ],
+      "title": "Client Request Path",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Count": {
+                "aggregations": [],
+                "operation": "aggregate"
+              },
+              "Country": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Path": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "action": {
+                "aggregations": [
+                  "allValues"
+                ],
+                "operation": "groupby"
+              },
+              "count": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              }
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "${DS_YESOREYERAM-INFINITY-DATASOURCE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "displayName": "${__field.labels}",
+          "fieldMinMax": false,
+          "mappings": [],
+          "max": 2,
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 10,
+        "x": 14,
+        "y": 15
+      },
+      "id": 73,
+      "options": {
+        "displayMode": "gradient",
+        "maxVizHeight": 80,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "left",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^count \\(count\\)$/",
+          "limit": 10,
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "manual",
+        "text": {},
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.2.0-73830",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "userAgent",
+              "text": "Path",
+              "type": "string"
+            },
+            {
+              "selector": "userAgent",
+              "text": "count",
+              "type": "string"
+            }
+          ],
+          "computed_columns": [],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "${DS_YESOREYERAM-INFINITY-DATASOURCE}"
+          },
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "groq": "*",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "data.viewer.accounts.firewallEventsAdaptive",
+          "source": "url",
+          "summarizeAlias": "",
+          "summarizeBy": "",
+          "summarizeExpression": "",
+          "type": "graphql",
+          "uql": "parse-json | scope \"data.viewer.accounts\" | mv-expand \"firewallEventsAdaptive\"",
+          "url": "https://api.cloudflare.com/client/v4/graphql",
+          "url_options": {
+            "body_content_type": "application/json",
+            "body_graphql_query": "query {\n  viewer {\n    accounts(filter: {accountTag:\"${accountTag}\"}) {\n      firewallEventsAdaptive(filter: \n        {  \n          \n          datetime_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\",datetime_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\",\n        } limit: 10000) {\n        userAgent\n      \n      }\n       \n    } \n    \n  }\n  \n} ",
+            "body_type": "graphql",
+            "data": "",
+            "headers": [],
+            "method": "POST",
+            "params": []
+          }
+        }
+      ],
+      "title": "User Agent",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Count": {
+                "aggregations": [],
+                "operation": "aggregate"
+              },
+              "Country": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Path": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "action": {
+                "aggregations": [
+                  "allValues"
+                ],
+                "operation": "groupby"
+              },
+              "count": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              }
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "${DS_YESOREYERAM-INFINITY-DATASOURCE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "displayName": "${__field.labels}",
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 17,
+        "w": 14,
+        "x": 0,
+        "y": 17
+      },
+      "id": 52,
+      "options": {
+        "displayMode": "gradient",
+        "maxVizHeight": 80,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "left",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^count \\(count\\)$/",
+          "values": true
+        },
+        "showUnfilled": false,
+        "sizing": "auto",
+        "text": {},
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.2.0-73830",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "action",
+              "text": "",
+              "type": "string"
+            },
+            {
+              "selector": "action",
+              "text": "count",
+              "type": "string"
+            }
+          ],
+          "computed_columns": [],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "${DS_YESOREYERAM-INFINITY-DATASOURCE}"
+          },
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "groq": "*",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "data.viewer.accounts.firewallEventsAdaptive",
+          "source": "url",
+          "summarizeAlias": "",
+          "summarizeBy": "",
+          "summarizeExpression": "",
+          "type": "graphql",
+          "uql": "parse-json | scope \"data.viewer.accounts\" | mv-expand \"firewallEventsAdaptive\"",
+          "url": "https://api.cloudflare.com/client/v4/graphql",
+          "url_options": {
+            "body_content_type": "application/json",
+            "body_graphql_query": "query {\n  viewer {\n    accounts(filter: {accountTag:\"${accountTag}\"}) {\n      firewallEventsAdaptive(filter: \n        {  \n          \n          datetime_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\",datetime_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\",\n        } limit: 10000) {\n        action\n      \n      }\n       \n    } \n    \n  }\n  \n} ",
+            "body_type": "graphql",
+            "data": "",
+            "headers": [],
+            "method": "POST",
+            "params": []
+          }
+        }
+      ],
+      "title": "Action taken",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Count": {
+                "aggregations": [],
+                "operation": "aggregate"
+              },
+              "action": {
+                "aggregations": [
+                  "allValues"
+                ],
+                "operation": "groupby"
+              },
+              "count": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              }
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "${DS_YESOREYERAM-INFINITY-DATASOURCE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 14,
+        "x": 0,
+        "y": 34
+      },
+      "id": 50,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.2.0-73830",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "datetimeHour",
+              "text": "",
+              "type": "timestamp"
+            },
+            {
+              "selector": "action",
+              "text": "action",
+              "type": "string"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "${DS_YESOREYERAM-INFINITY-DATASOURCE}"
+          },
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "data.viewer.accounts.firewallEventsAdaptive",
+          "source": "url",
+          "type": "graphql",
+          "url": "https://api.cloudflare.com/client/v4/graphql",
+          "url_options": {
+            "body_content_type": "application/json",
+            "body_graphql_query": "query {\n  viewer {\n    accounts(filter: {accountTag:\"${accountTag}\"}) {\n      firewallEventsAdaptive(filter: \n        {  \n          \n          datetime_geq: \"${__from:date:YYYY-MM-DDTHH:mm:ssZ}\",datetime_leq: \"${__to:date:YYYY-MM-DDTHH:mm:ssZ}\",\n        } limit: 10000  orderBy: [datetimeHour_ASC]) {\n        datetimeHour\n        action\n        \n      }  \n       \n    } \n    \n  }\n  \n}",
+            "body_type": "graphql",
+            "data": "",
+            "headers": [],
+            "method": "POST",
+            "params": []
+          }
+        }
+      ],
+      "title": "Actions over time",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "action": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              },
+              "datetimeHour": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 39,
+  "tags": [
+    "cloudflare"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "{your ID here}",
+          "value": "{your ID here}"
+        },
+        "includeAll": false,
+        "name": "accountTag",
+        "options": [
+          {
+            "selected": true,
+            "text": "{account name}",
+            "value": "{your ID here}"
+          }
+        ],
+        "query": "{account name} : {your ID here}",
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-2d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Cloudflare Firewall Analytics",
+  "uid": "cdu1easo9gmpsa",
+  "version": 2,
+  "weekStart": ""
+}
