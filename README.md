@@ -12,6 +12,8 @@ This repository contains a minimalist Grafana dashboard designed to visualize `f
 
 To enable the Infinity data source to authenticate with Cloudflare, you need to generate a bearer token. Follow these steps:
 
+![Screenshot of the API Token Section in the Cloudflare Account](images/cf_token.png)
+
 1. Log in to your Cloudflare account.
 2. Navigate to **My Profile** under your account settings.
 3. Select **API Tokens** and click on **Create Token**.
@@ -20,11 +22,15 @@ To enable the Infinity data source to authenticate with Cloudflare, you need to 
 
 ### Step 2: Configure the Data Source
 
+![Screenshot of the Configuration of the Infinity Data Source in Grafana](images/infinity.png)
+
 1. In Grafana, add a new Infinity data source.
 2. In the data source settings, enter your Cloudflare bearer token.
 3. Add the Cloudflare endpoint as allowed host: `https://api.cloudflare.com/client/v4/graphql`.
 
 ### Step 3: Configure the Dashboard
+
+![Screenshot of the Dashboard Settings in Grafana](images/dashboard_settings.png)
 
 1. Import the provided dashboard JSON file into Grafana.
 2. In the dashboard settings, configure it to use the Infinity data source.
